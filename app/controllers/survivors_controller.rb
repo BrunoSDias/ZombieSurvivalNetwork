@@ -1,5 +1,5 @@
 class SurvivorsController < ApplicationController
-  before_action :set_survivor, only: [:show, :update, :destroy]
+  before_action :set_survivor, only: [:show, :update, :destroy, :report_counter]
 
   # GET /survivors
   def index

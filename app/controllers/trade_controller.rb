@@ -1,8 +1,10 @@
 class TradeController < ApplicationController
   before_action :set_survivors, only: [:get_trade, :set_trade]
+  before_action :check_qnt_itens, only: [:compare_points]
+  before_action :infected_survivors?, only: [:get_trade, :set_trade]
 
   def get_trade
-    infected_survivors?
+    render json: {survivor01: @survivor1.inventory, survivor02: @survivor2.inventory}, status: 200
   end
 
   def set_trade
@@ -31,30 +33,13 @@ class TradeController < ApplicationController
         infected_survivors << @survivor2.name
       end
 
-      if infected_survivors.empty?
-        render json: {survivor01: @survivor1.inventory, survivor02: @survivor2.inventory}
-      else
+      unless infected_survivors.empty?
         render json: {message: "#{infected_survivors.join(',')} foram infectados, por isso não é possível realizar essa ação"}, status: 406
+        return
       end
     end
 
     def compare_points
-
-      survivor1_itens = {water: @survivor1.inventory.water,
-                         food: @survivor1.inventory.food,
-                         medication: @survivor1.inventory.medication,
-                         ammunition: @survivor1.inventory.ammunition}
-
-      survivor2_itens = {water: @survivor2.inventory.water,
-                         food: @survivor2.inventory.food,
-                         medication: @survivor2.inventory.medication,
-                         ammunition: @survivor2.inventory.ammunition}
-      
-      survivor1_itens.each_with_index do |(key, value), index|
-        if value < @survivor1_trade_itens[index]
-          render json: {message: "O #{@survivor1.name} não possui essa quantidade de #{key} para a troca"}
-        end
-      end
                        
       points_sur1 = 0
       points_sur2 = 0
@@ -77,15 +62,23 @@ class TradeController < ApplicationController
       end
 
       if points_sur1 == points_sur2
-          @survivor1.inventory.water = @survivor2_trade_itens[0]
-          @survivor1.inventory.food = @survivor2_trade_itens[1]
-          @survivor1.inventory.medication = @survivor2_trade_itens[2]
-          @survivor1.inventory.ammunition = @survivor2_trade_itens[3]
+          @survivor1.inventory.water -= @survivor1_trade_itens[0]
+          @survivor1.inventory.water += @survivor2_trade_itens[0]
+          @survivor1.inventory.food -= @survivor1_trade_itens[1]
+          @survivor1.inventory.food += @survivor2_trade_itens[1]
+          @survivor1.inventory.medication -= @survivor1_trade_itens[2]
+          @survivor1.inventory.medication += @survivor2_trade_itens[2]
+          @survivor1.inventory.ammunition -= @survivor1_trade_itens[3]
+          @survivor1.inventory.ammunition += @survivor2_trade_itens[3]
 
-          @survivor2.inventory.water = @survivor1_trade_itens[0]
-          @survivor2.inventory.food = @survivor1_trade_itens[1]
-          @survivor2.inventory.medication = @survivor1_trade_itens[2]
-          @survivor2.inventory.ammunition = @survivor1_trade_itens[3]
+          @survivor2.inventory.water -= @survivor2_trade_itens[0]
+          @survivor2.inventory.water += @survivor1_trade_itens[0]
+          @survivor2.inventory.food -= @survivor2_trade_itens[1]
+          @survivor2.inventory.food += @survivor1_trade_itens[1]
+          @survivor2.inventory.medication -= @survivor2_trade_itens[2]
+          @survivor2.inventory.medication += @survivor1_trade_itens[2]
+          @survivor2.inventory.ammunition -= @survivor2_trade_itens[3]
+          @survivor2.inventory.ammunition += @survivor1_trade_itens[3]
 
           @survivor1.inventory.save!
           @survivor2.inventory.save!
@@ -93,6 +86,30 @@ class TradeController < ApplicationController
           render json: {survivor01: @survivor1.inventory, survivor02: @survivor2.inventory}, status: 200
       else
           render json: {message: 'O valor dos itens trocados devem ser os mesmos.'}, status: 406
+      end
+    end
+  
+    def check_qnt_itens
+      survivor1_itens = {water: @survivor1.inventory.water,
+                         food: @survivor1.inventory.food,
+                         medication: @survivor1.inventory.medication,
+                         ammunition: @survivor1.inventory.ammunition}
+
+      survivor2_itens = {water: @survivor2.inventory.water,
+                         food: @survivor2.inventory.food,
+                         medication: @survivor2.inventory.medication,
+                         ammunition: @survivor2.inventory.ammunition}
+      
+      survivor1_itens.each_with_index do |(key, value), index|
+        if value < @survivor1_trade_itens[index]
+          render json: {message: "O #{@survivor1.name} não possui essa quantidade de #{key} para a troca"}
+          return
+        end
+        
+        if survivor2_itens[key] < @survivor2_trade_itens[index]
+          render json: {message: "O #{@survivor2.name} não possui essa quantidade de #{key} para a troca"}
+          return
+        end
       end
     end
 end
