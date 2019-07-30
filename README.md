@@ -1,24 +1,11 @@
-# README
+# Zombie Survival Network
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## Endpoints
 
-Things you may want to cover:
+* /survivors(GET): Return a object of all the survivors.
 
-* Ruby version
+* /survivors(POST): Create a new survivor, expect the parameters of the object survivor, :name, :age, :gender, :latitude, :longitude and the parameters of the object inventory :water, :food, :medication, :ammunition are filled.
 
-* System dependencies
+* /trade(GET): Expects the id of the two survivor objects (:survivor_1 e :survivor_2) that will perform the exchange and return the objects inself.
 
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+* /trade(POST): Expects the id of the two survivor objects (:survivor_1 e :survivor_2) of the two survivor objects and the :itens1_ids, :itens2_ids that are arrays of the respective survivor object inventory that were selected to be exchange between the survivors.
