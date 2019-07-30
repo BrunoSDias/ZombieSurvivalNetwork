@@ -40,15 +40,21 @@ class TradeController < ApplicationController
 
     def compare_points
 
-    survivor1_itens = {water: @survivor1.inventory.water,
-                       food: @survivor1.inventory.food,
-                       medication: @survivor1.inventory.medication,
-                       ammunition: @survivor1.inventory.ammunition}
+      survivor1_itens = {water: @survivor1.inventory.water,
+                         food: @survivor1.inventory.food,
+                         medication: @survivor1.inventory.medication,
+                         ammunition: @survivor1.inventory.ammunition}
 
-    survivor2_itens = {water: @survivor2.inventory.water,
-                       food: @survivor2.inventory.food,
-                       medication: @survivor2.inventory.medication,
-                       ammunition: @survivor2.inventory.ammunition}
+      survivor2_itens = {water: @survivor2.inventory.water,
+                         food: @survivor2.inventory.food,
+                         medication: @survivor2.inventory.medication,
+                         ammunition: @survivor2.inventory.ammunition}
+      
+      survivor1_itens.each_with_index do |(key, value), index|
+        if value < @survivor1_trade_itens[index]
+          render json: {message: "O #{@survivor1.name} não possui essa quantidade de #{key} para a troca"}
+        end
+      end
                        
       points_sur1 = 0
       points_sur2 = 0
