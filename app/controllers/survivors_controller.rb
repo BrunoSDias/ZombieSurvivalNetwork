@@ -61,10 +61,4 @@ class SurvivorsController < ApplicationController
     def update_survivor_params
       params.require(:survivor).permit(:latitude, :longitude)
     end
-
-    def infected_survivor?
-      if @survivor.infected
-        render json: "#{@survivor.name} foi infectado"
-      end
-    end
 end
