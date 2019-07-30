@@ -6,11 +6,11 @@ class TradeController < ApplicationController
   end
 
   def set_trade
-    @survivor1_itens = []
-    @survivor2_itens = []
+    @survivor1_trade_itens = []
+    @survivor2_trade_itens = []
 
-    params[:itens1_ids].tr('[]', '').split(',').map { |i| @survivor1_itens << i.to_i }
-    params[:itens2_ids].tr('[]', '').split(',').map { |i| @survivor2_itens << i.to_i }
+    params[:itens1_ids].tr('[]', '').split(',').map { |i| @survivor1_trade_itens << i.to_i }
+    params[:itens2_ids].tr('[]', '').split(',').map { |i| @survivor2_trade_itens << i.to_i }
 
     compare_points
   end
@@ -39,36 +39,47 @@ class TradeController < ApplicationController
     end
 
     def compare_points
+
+    survivor1_itens = {water: @survivor1.inventory.water,
+                       food: @survivor1.inventory.food,
+                       medication: @survivor1.inventory.medication,
+                       ammunition: @survivor1.inventory.ammunition}
+
+    survivor2_itens = {water: @survivor2.inventory.water,
+                       food: @survivor2.inventory.food,
+                       medication: @survivor2.inventory.medication,
+                       ammunition: @survivor2.inventory.ammunition}
+                       
       points_sur1 = 0
       points_sur2 = 0
 
-      @survivor1_itens.each_with_index do |item, index|
+      @survivor1_trade_itens.each_with_index do |item, index|
         case index
         when 0
           points_sur1 += (item * 4)
-          points_sur2 += (@survivor2_itens[index] * 4)
+          points_sur2 += (@survivor2_trade_itens[index] * 4)
         when 1
           points_sur1 += (item * 3)
-          points_sur2 += (@survivor2_itens[index] * 3)
+          points_sur2 += (@survivor2_trade_itens[index] * 3)
         when 2
           points_sur1 += (item * 2)
-          points_sur2 += (@survivor2_itens[index] * 2)
+          points_sur2 += (@survivor2_trade_itens[index] * 2)
         when 3
           points_sur1 += (item * 1)
-          points_sur2 += (@survivor2_itens[index] * 1)
+          points_sur2 += (@survivor2_trade_itens[index] * 1)
         end
       end
 
       if points_sur1 == points_sur2
-          @survivor1.inventory.water = @survivor2_itens[0]
-          @survivor1.inventory.food = @survivor2_itens[1]
-          @survivor1.inventory.medication = @survivor2_itens[2]
-          @survivor1.inventory.ammunition = @survivor2_itens[3]
+          @survivor1.inventory.water = @survivor2_trade_itens[0]
+          @survivor1.inventory.food = @survivor2_trade_itens[1]
+          @survivor1.inventory.medication = @survivor2_trade_itens[2]
+          @survivor1.inventory.ammunition = @survivor2_trade_itens[3]
 
-          @survivor2.inventory.water = @survivor1_itens[0]
-          @survivor2.inventory.food = @survivor1_itens[1]
-          @survivor2.inventory.medication = @survivor1_itens[2]
-          @survivor2.inventory.ammunition = @survivor1_itens[3]
+          @survivor2.inventory.water = @survivor1_trade_itens[0]
+          @survivor2.inventory.food = @survivor1_trade_itens[1]
+          @survivor2.inventory.medication = @survivor1_trade_itens[2]
+          @survivor2.inventory.ammunition = @survivor1_trade_itens[3]
 
           @survivor1.inventory.save!
           @survivor2.inventory.save!
