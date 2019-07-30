@@ -34,13 +34,12 @@ class TradeController < ApplicationController
       end
 
       unless infected_survivors.empty?
-        render json: {message: "#{infected_survivors.join(',')} foram infectados, por isso não é possível realizar essa ação"}, status: 406
+        render json: {message: "#{infected_survivors.join(',')} foram infectados, por isso não é possível realizar essa ação"}, status: 401
         return
       end
     end
 
     def compare_points
-                       
       points_sur1 = 0
       points_sur2 = 0
 
