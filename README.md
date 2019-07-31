@@ -1,6 +1,6 @@
 # Zombie Survival Social Network
 
-Tests made with the own minitest from rails on `survivors` and `trade` controllers, just run `rake test` to use them.
+Tests made with the own minitest from rails at `survivors` and `trade` controllers, just run `rake test` to use them.
 
 ## System Requirements
 - Ruby version 2.3.8.
