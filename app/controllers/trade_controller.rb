@@ -15,7 +15,7 @@ class TradeController < ApplicationController
     params[:itens2_values].tr('[]', '').split(',').map { |i| @survivor2_trade_itens << i.to_i }
 
     if @survivor1_trade_itens.count > 4 || @survivor2_trade_itens.count > 4
-      render json: {message: 'Número errado de parametros enviados (um array de 4 parametros deve ser enviado)'}, status: 406
+      render json: {message: 'Wrong number of sended parameters (a array of 4 parameters must be sended)'}, status: 406
       return
     end
 
@@ -39,7 +39,7 @@ class TradeController < ApplicationController
       end
 
       unless infected_survivors.empty?
-        render json: {message: "#{infected_survivors.join(',')} foram infectados, por isso não é possível realizar essa ação"}, status: 401
+        render json: {message: "#{infected_survivors.join(',')} were infected, so it is not possible to perform this action"}, status: 401
         return
       end
     end
@@ -89,7 +89,7 @@ class TradeController < ApplicationController
 
           render json: {survivor01: @survivor1.inventory, survivor02: @survivor2.inventory}, status: 200
       else
-          render json: {message: 'O valor dos itens trocados devem ser os mesmos.'}, status: 406
+          render json: {message: 'The value of the exchanged items must be the same.'}, status: 406
       end
     end
   
@@ -106,12 +106,12 @@ class TradeController < ApplicationController
       
       survivor1_itens.each_with_index do |(key, value), index|
         if value < @survivor1_trade_itens[index]
-          render json: {message: "O #{@survivor1.name} não possui essa quantidade de #{key} para a troca"}, status: 406
+          render json: {message: "The #{@survivor1.name} doesn't have this amount of #{key} to the exchange"}, status: 406
           return
         end
         
         if survivor2_itens[key] < @survivor2_trade_itens[index]
-          render json: {message: "O #{@survivor2.name} não possui essa quantidade de #{key} para a troca"}, status: 406
+          render json: {message: "O #{@survivor2.name} doesn't have this amount of #{key} to the exchange"}, status: 406
           return
         end
       end
