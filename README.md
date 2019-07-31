@@ -1,5 +1,7 @@
 # Zombie Survival Social Network
 
+Tests made with the own minitest from rails on `survivors` and `trade` controllers, just run `rake test` to use them.
+
 ## Endpoints
 
 * **/survivors** (GET): Return all the survivors.
@@ -14,7 +16,7 @@
   - Then the parameter sended to controller must be compounded by a array of four integers values:  
       &nbsp;&nbsp;**[val1, val2, val3, val4]**  
   - Each value represents the field in the above order and will be exchanged to the another survivor when the action is complete.  
-    Another detail is, to the exchange be well succeded, the points of each field represents must be the same:  
+    Another detail is, to the exchange be well succeded, the points that each field represents must be the same:  
 
     | Item         | Points   |
     |:------------:|:--------:|
