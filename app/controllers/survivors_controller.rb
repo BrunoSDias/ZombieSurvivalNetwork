@@ -12,8 +12,10 @@ class SurvivorsController < ApplicationController
   end
 
   def create
-    @survivor = Survivor.new(survivor_params)
+    @survivor = Survivor.new()
     @survivor.build_inventory
+
+    @survivor = Survivor.create(survivor_params)
     
     if @survivor.save
       render json: @survivor, include: :inventory, status: :created, location: @survivor
@@ -42,22 +44,21 @@ class SurvivorsController < ApplicationController
       render json: @survivor.errors, status: :unprocessable_entity
     end
   end
-  
-
-  def destroy
-    @survivor.destroy
-  end
 
   def survivors_info
     infected = 0
+    points_lost = 0
+
     total_water = 0
     total_food = 0
     total_medication = 0
     total_ammunition = 0
+
     avg_water = 0
     avg_food = 0
     avg_medication = 0
     avg_ammunition = 0
+
     survivors = Survivor.all
 
     survivors.each do |s|
@@ -67,6 +68,11 @@ class SurvivorsController < ApplicationController
         total_food += s.inventory.food
         total_medication += s.inventory.medication
         total_ammunition += s.inventory.ammunition
+      else
+        points_lost += s.inventory.water * 4
+        points_lost += s.inventory.food * 3
+        points_lost += s.inventory.medication * 2
+        points_lost += s.inventory.ammunition * 1
       end
     end
 
@@ -74,8 +80,6 @@ class SurvivorsController < ApplicationController
     avg_food = total_food/survivors.count
     avg_medication = total_medication/survivors.count
     avg_ammunition = total_ammunition/survivors.count
-
-
 
     percentage_infected = (infected*100)/survivors.count
     render json: {percentage_infected: percentage_infected,
@@ -85,8 +89,9 @@ class SurvivorsController < ApplicationController
                       food: avg_food,
                       medication: avg_medication,
                       ammunition: avg_ammunition
-                    }
-                  }
+                    },
+                    points_lost_by_infected_survivors: points_lost
+                  }, status: 200
   end
 
   private

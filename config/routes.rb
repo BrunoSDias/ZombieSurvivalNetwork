@@ -3,5 +3,5 @@ Rails.application.routes.draw do
   post 'trade', to: 'trade#set_trade'
   get 'report', to: 'survivors#report_counter'
   get 'survivors_info', to: 'survivors#survivors_info'
-  resources :survivors
+  resources :survivors, except: [:destroy]
 end

@@ -12,10 +12,18 @@ class SurvivorsControllerTest < ActionDispatch::IntegrationTest
 
   test "should create survivor" do
     assert_difference('Survivor.count') do
-      post survivors_url, params: { survivor: { age: @survivor.age, gender: @survivor.gender, latitude: @survivor.latitude, longitude: @survivor.longitude, name: @survivor.name } }, as: :json
+      post survivors_url, params: { survivor: { age: @survivor.age, gender: @survivor.gender, latitude: @survivor.latitude, longitude: @survivor.longitude, name: @survivor.name, inventory_attributes: {water: 1, food: 2, medication: 3, ammunition: 4} } }, as: :json
     end
 
     assert_response 201
+  end
+
+  test "should not create survivor" do
+    assert_no_difference('Survivor.count') do
+      post survivors_url, params: { survivor: { age: '', gender: @survivor.gender, latitude: @survivor.latitude, longitude: @survivor.longitude, name: @survivor.name, inventory_attributes: {water: 1, food: 2, medication: 3, ammunition: 4} } }, as: :json
+    end
+
+    assert_response 422
   end
 
   test "should show survivor" do
@@ -23,16 +31,24 @@ class SurvivorsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "should update survivor" do
-    patch survivor_url(@survivor), params: { survivor: { age: @survivor.age, gender: @survivor.gender, latitude: @survivor.latitude, longitude: @survivor.longitude, name: @survivor.name } }, as: :json
+  test "should update survivor location" do
+    patch survivor_url(@survivor), params: { survivor: {latitude: @survivor.latitude, longitude: @survivor.longitude} }, as: :json
     assert_response 200
   end
 
-  test "should destroy survivor" do
-    assert_difference('Survivor.count', -1) do
-      delete survivor_url(@survivor), as: :json
-    end
+  test "should not update survivor location" do
+    patch survivor_url(@survivor), params: { survivor: {latitude: '', longitude: @survivor.longitude} }, as: :json
+    assert_response 422
+  end
 
-    assert_response 204
+  test "should increase survivor report_counter" do
+    get report_path(id: @survivor.id), as: :json
+    assert_not_equal( @survivor.report_counter, Survivor.find(@survivor.id).report_counter)
+    assert_response 200
+  end
+
+  test "should get survivors info" do
+    get survivors_info_path, as: :json
+    assert_response 200
   end
 end

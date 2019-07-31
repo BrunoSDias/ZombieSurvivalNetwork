@@ -11,8 +11,13 @@ class TradeController < ApplicationController
     @survivor1_trade_itens = []
     @survivor2_trade_itens = []
 
-    params[:itens1_ids].tr('[]', '').split(',').map { |i| @survivor1_trade_itens << i.to_i }
-    params[:itens2_ids].tr('[]', '').split(',').map { |i| @survivor2_trade_itens << i.to_i }
+    params[:itens1_values].tr('[]', '').split(',').map { |i| @survivor1_trade_itens << i.to_i }
+    params[:itens2_values].tr('[]', '').split(',').map { |i| @survivor2_trade_itens << i.to_i }
+
+    if @survivor1_trade_itens.count > 4 || @survivor2_trade_itens.count > 4
+      render json: {message: 'Número errado de parametros enviados (um array de 4 parametros deve ser enviado)'}, status: 406
+      return
+    end
 
     compare_points
   end
@@ -101,12 +106,12 @@ class TradeController < ApplicationController
       
       survivor1_itens.each_with_index do |(key, value), index|
         if value < @survivor1_trade_itens[index]
-          render json: {message: "O #{@survivor1.name} não possui essa quantidade de #{key} para a troca"}
+          render json: {message: "O #{@survivor1.name} não possui essa quantidade de #{key} para a troca"}, status: 406
           return
         end
         
         if survivor2_itens[key] < @survivor2_trade_itens[index]
-          render json: {message: "O #{@survivor2.name} não possui essa quantidade de #{key} para a troca"}
+          render json: {message: "O #{@survivor2.name} não possui essa quantidade de #{key} para a troca"}, status: 406
           return
         end
       end
