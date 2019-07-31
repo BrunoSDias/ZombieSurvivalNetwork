@@ -2,6 +2,11 @@
 
 Tests made with the own minitest from rails on `survivors` and `trade` controllers, just run `rake test` to use them.
 
+## System Requirements
+- Ruby version 2.3.8.
+- Rails version 5.2.3.
+- SQLite 3.6.16 or newer 
+
 ## Endpoints
 
 * **/survivors** (GET): Return all the survivors.
