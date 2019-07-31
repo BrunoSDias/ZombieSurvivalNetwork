@@ -6,9 +6,13 @@ Tests made with the own minitest from rails on `survivors` and `trade` controlle
 
 * **/survivors** (GET): Return all the survivors.
 
+* **/survivors/:id** (GET): Shows a specificy survivor.
+
+* **/survivors/:id** (PATCH) or (PUT): Update a specificy survivor location, expects the parameters `:latitude, :longitude`.
+
 * **/survivors** (POST): Create a new survivor, expect the parameters of the object survivor, `:name, :age, :gender, :latitude, :longitude` and the parameters of the object inventory `:water, :food, :medication, :ammunition`, also return the new survivor.
 
-* **/trade** (GET): Expects the id of the two survivors (`:survivor_1 e :survivor_2`) that will perform the exchange and return the objects inself.
+* **/trade** (GET): Expects the id of the two survivors (`:survivor_1 e :survivor_2`) that will perform the exchange and return the objects itself.
 
 * **/trade** (POST): Expects the id of the two survivors (`:survivor_1 e :survivor_2`) that will perform the exchange and the parameters `:itens1_values and :itens2_values` that are arrays compounded by how much of each item of the inventory of the respective survivor will be exchanged, for example:
   - The inventory object is compound by four fields beyond the survivor reference, these are:  
